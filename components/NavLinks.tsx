@@ -12,8 +12,8 @@ const links = [
 
 function normalizePath(p: string | null | undefined) {
   if (!p) return "/";
-  if (p === "/") return "/";
-  return p.replace(/\+$/, "");
+  const normalized = p.replace(/\+$/, "");
+  return normalized || "/";
 }
 
 export default function NavLinks() {
@@ -24,16 +24,17 @@ export default function NavLinks() {
         <nav>
             <ul className="flex gap-6">
           {links.map(({ href, label }) => {
-            const normalizedHref = normalizePath(href);    
+            const normalizedHref = normalizePath(href);
+            const isCurrentPage = current === normalizedHref;
             const isActive = 
-              normalizedHref === "/"
-                ? current === "/"
-                : current === normalizedHref || current.startsWith(normalizedHref + "/");
-            
-              return (
+              isCurrentPage ||
+              (normalizedHref !== "/" && current.startsWith(normalizedHref + "/"));
+             
+            return (
                 <li key={href}>
                   <Link
                     href={href}
+                    aria-current={isCurrentPage ? "page" : undefined}
                     className={
                       isActive
                         ? "font-semibold text-white underline underline-offset-4"
