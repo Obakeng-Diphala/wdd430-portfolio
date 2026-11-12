@@ -1,14 +1,20 @@
+import { NextRequest, NextResponse } from "next/server";
 import { getProjects } from "../../../lib/projects-db";
 
-export async function GET(request: Request) {
-  const type = new URL(request.url).searchParams.get("type");
+export async function GET(request: NextRequest) {
+  try {
+    const type = request.nextUrl.searchParams.get("type");
 
-  if (type !== null && type !== "opensource" && type !== "school") {
-    return Response.json(
-      { error: "type must be 'opensource' or 'school'" },
-      { status: 400 },
+    const projects = await getProjects(type);
+
+    return NextResponse.json(projects);
+
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+
+    return NextResponse.json(
+      { error: "Failed to fetch projects" },
+      { status: 500 }
     );
   }
-
-  return Response.json(getProjects(type));
-}
+}  
