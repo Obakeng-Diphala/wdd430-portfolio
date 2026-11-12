@@ -16,7 +16,12 @@ export default async function ProjectsPage() {
   return (
     <main>
       <h1>Projects Overview</h1>
-      <ProjectList projects={projects} />
+      <ProjectList
+        projects={projects.map((project) => ({
+          ...project,
+          link: project.link ?? undefined,
+        }))}
+      />
     </main>
   );
 }
