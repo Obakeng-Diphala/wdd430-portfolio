@@ -2,6 +2,7 @@ import ProjectList from "@/components/ProjectList";
 import type { Project } from "@/lib/projects-db";
 
 export default async function OpenSourceProjectsPage() {
+
   const baseURL = process.env.APP_BASE_URL ?? "http://localhost:3000";
   const response = await fetch(
     new URL("/api/projects?type=opensource", baseURL),
@@ -15,11 +16,15 @@ export default async function OpenSourceProjectsPage() {
   }
 
   const projects = (await response.json()) as Project[];
+  const projectListItems = projects.map((project) => ({
+    ...project,
+    link: project.link ?? undefined,
+  }));
 
   return (
     <main>
       <h1>Open Source Projects</h1>
-      <ProjectList projects={projects} />
+      <ProjectList projects={projectListItems} />
     </main>
   );
 }
