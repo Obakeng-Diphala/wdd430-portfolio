@@ -1,27 +1,35 @@
 import ProjectList from "@/components/ProjectList";
-import type { Project } from "@/lib/projects-db";
+import ProjectSearch from "@/components/ProjectSearch";
+import Pagination from "@/components/Pagination";
+import { fetchFilteredProjects, fetchProjectPages } from "@/lib/projects-db";
 
-export default async function ProjectsPage() {
-  const baseURL = process.env.APP_BASE_URL ?? "http://localhost:3000";
-  const response = await fetch(new URL("/api/projects", baseURL), {
-    cache: "no-store",
-  });
+export default async function ProjectsPage(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch projects");
-  }
+  const [projects, totalPages] = await Promise.all([
+    fetchFilteredProjects(query, currentPage),
+    fetchProjectPages(query),
+  ]);
 
-  const projects = (await response.json()) as Project[];
+  const projectListItems = projects.map((project) => ({
+    ...project,
+    link: project.link ?? undefined,
+  }));
 
   return (
-    <main>
-      <h1>Projects Overview</h1>
-      <ProjectList
-        projects={projects.map((project) => ({
-          ...project,
-          link: project.link ?? undefined,
-        }))}
-      />
+    <main className="mx-auto max-w-4xl p-6">
+      <h1 className="mb-4 text-2xl font-bold">Projects Overview</h1>
+      <ProjectSearch placeholder="Search by title or description..." />
+      <ProjectList projects={projectListItems} />
+      <Pagination totalPages={totalPages} />
     </main>
   );
-}
+} 
+  
