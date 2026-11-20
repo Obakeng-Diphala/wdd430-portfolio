@@ -97,3 +97,48 @@ export async function fetchProjectPages(query: string): Promise<number> {
   const totalCount = Number(rows[0]?.count ?? 0);
   return Math.max(1, Math.ceil(totalCount / ITEMS_PER_PAGE));
 }  
+
+export async function insertProject(data: {
+  title: string;
+  description: string;
+  type: "opensource" | "school";
+  technologies: string[]; 
+  link?: string | null;
+}) {
+  const sql = getSql();
+  await sql`
+    INSERT INTO projects (title, description, type, technologies, link)
+    VALUES (${data.title}, ${data.description}, ${data.type}, ${data.technologies}, {data.link ?? null})
+   `; 
+}
+
+export async function updateProjectById(
+  id: number,
+  data: {
+    title: string;
+    description: string;
+    type: "opensource" | "school";
+    technologies: string[];
+    link?: string | null;
+  }
+) {
+  const sql = getSql();
+  await sql`
+    UPDATE projects
+    SET title = ${data.title},
+        description = ${data.description},
+        type = ${data.type},
+        technologies = ${data.technologies},
+        link = ${data.link ?? null}
+    WHERE id = ${id}
+   `;
+  
+}
+
+export async function deleteProjectById(id: number) {
+  const sql = getSql();
+  await sql`
+    DELETE FROM projects
+    WHERE id = ${id}
+  `;
+}
