@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ProjectList from "@/components/ProjectList";
 import ProjectSearch from "@/components/ProjectSearch";
 import Pagination from "@/components/Pagination";
