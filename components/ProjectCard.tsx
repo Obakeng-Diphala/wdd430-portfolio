@@ -43,7 +43,7 @@ export default function ProjectCard({
 
       <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center gap-3">
         <Link
-          href={`/${id}/edit`}
+          href={`/projects/${id}/edit`}
           className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           Edit

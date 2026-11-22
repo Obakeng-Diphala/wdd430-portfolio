@@ -3,6 +3,8 @@ import SkillCard from "../components/SkillCard";
 
 const projects = [
   {
+    id: 1,
+    type: "opensource",
     title: "Calendar Project",
     description:
       "A Java GUI program that is built to demonstrate a calendar that can handle multiple tasks and events.",
@@ -10,6 +12,8 @@ const projects = [
     link: "https://github.com/byui-dev/calendar-project",
   },
   {
+    id: 2,
+    type: "opensource",
     title: "Note taking app",
     description: "A simple note-taking app built using Kotlin",
     technologies: ["Kotlin"],
