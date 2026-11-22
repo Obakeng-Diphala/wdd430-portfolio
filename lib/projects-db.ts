@@ -108,7 +108,7 @@ export async function insertProject(data: {
   const sql = getSql();
   await sql`
     INSERT INTO projects (title, description, type, technologies, link)
-    VALUES (${data.title}, ${data.description}, ${data.type}, ${data.technologies}, {data.link ?? null})
+    VALUES (${data.title}, ${data.description}, ${data.type}, ${data.technologies}, {$data.link ?? null})
    `; 
 }
 
