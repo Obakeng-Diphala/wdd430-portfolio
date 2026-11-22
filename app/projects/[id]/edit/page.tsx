@@ -26,7 +26,7 @@ export default async function EditProjectPage(props: {
     <main className="max-w-2xl mx-auto p-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Edit Project</h1>
-        <Link href="/" className="text-sm text-gray-600 hover-underline">
+        <Link href="/" className="text-sm text-gray-600 hover:underline">
           ← Back to Projects
         </Link>
       </div>
