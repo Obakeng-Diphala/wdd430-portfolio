@@ -1,25 +1,6 @@
 import ProjectList from "../components/ProjectList";
 import SkillCard from "../components/SkillCard";
-
-const projects = [
-  {
-    id: 1,
-    type: "opensource",
-    title: "Calendar Project",
-    description:
-      "A Java GUI program that is built to demonstrate a calendar that can handle multiple tasks and events.",
-    technologies: ["Java", "JavaFX"],
-    link: "https://github.com/byui-dev/calendar-project",
-  },
-  {
-    id: 2,
-    type: "opensource",
-    title: "Note taking app",
-    description: "A simple note-taking app built using Kotlin",
-    technologies: ["Kotlin"],
-    link: "https://github.com/byui-dev/note-taking-app",
-  },
-];
+import { getProjects } from "@/lib/projects-db";
 
 const skills = [
   {
@@ -30,13 +11,15 @@ const skills = [
   },
   {
     title: "Kotlin",
-    description: "Experienced in Kotlin development for Android and backend applications.",
+    description:
+      "Experienced in Kotlin development for Android and backend applications.",
     level: "Intermediate",
     technologies: ["Kotlin", "Android", "ktor"],
   },
   {
     title: "FrontEnd Development",
-    description: "Skilled in building responsive and interactive web applications.",
+    description:
+      "Skilled in building responsive and interactive web applications.",
     level: "Intermediate",
     technologies: ["HTML", "CSS", "JavaScript", "React"],
   },
@@ -47,14 +30,16 @@ const skills = [
     technologies: ["Node.js", "Python", "Express"],
   },
   {
-    title: "Problem Solving", 
+    title: "Problem Solving",
     description: "Able to analyze problems and develop effective solutions.",
     level: "Advanced",
     technologies: ["Critical Thinking", "Logical Reasoning"],
-  }
+  },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const projects = await getProjects();
+
   return (
     <main className="flex min-h-screen flex-col bg-zinc-50 px-6 py-12 text-zinc-900 dark:bg-black dark:text-zinc-50">
       <div className="mx-auto w-full max-w-5xl">
@@ -78,7 +63,8 @@ export default function Home() {
           <h2 className="text-2xl font-bold mb-6">My Skills</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {skills.map((skill) => (
-              <SkillCard key={skill.title}
+              <SkillCard
+                key={skill.title}
                 title={skill.title}
                 description={skill.description}
                 level={skill.level}
