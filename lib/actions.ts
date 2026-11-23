@@ -5,8 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
   insertProject,
-    updateProjectById,
-    deleteProjectById,
+  updateProjectById,
+  deleteProjectById,
 } from "./projects-db";
 
 const ProjectFormSchema = z.object({
@@ -17,74 +17,97 @@ const ProjectFormSchema = z.object({
   link: z.string().optional(),
 });
 
-export async function createProject(formData: FormData) {
-    const validateFields = ProjectFormSchema.safeParse({
-        title: formData.get("title"),
-        description: formData.get("description"),
-        technologies: formData.get("technologies"),
-        type: formData.get("type") || "school",
-        link: formData.get("link") || undefined,
-    });
-  
-    if (!validateFields.success) {
-        throw new Error("Invalid project form data");
-    }
-  
-    const { title, description, technologies, type, link } = validateFields.data;
+export type ProjectFormState = {
+  message: string;
+  errors: Partial<
+    Record<
+      "title" | "description" | "technologies" | "type" | "link",
+       string[]
+    >
+  >;
+};
+
+export async function createProject(
+  _prevState: ProjectFormState,
+  formData: FormData),
+): Promise<ProjectFormState> {
+  const validateFields = ProjectFormSchema.safeParse({
+    title: formData.get("title"),
+    description: formData.get("description"),
+    technologies: formData.get("technologies"),
+    type: formData.get("type") || "school",
+    link: formData.get("link") || undefined,
+  });
+
+  if (!validateFields.success) {
+    const { fieldErrors } = validateFields.error.flatten();
     
-    // Convert comma-separated string into string[] for Postgres
-    const techArray = technologies
-        .split(",")
-        .map((tech) => tech.trim())
-        .filter(Boolean);
+    return {
+      message: "Please correct the highlighted fields.",
+      errors: fieldErrors,
+    };
+  }
 
+  const { title, description, technologies, type, link } = validateFields.data;
 
-    await insertProject({
-        title,
-        description,
-        type,
-        technologies: techArray,
-        link: link
-    });
+  // Convert comma-separated string into string[] for Postgres
+  const techArray = technologies
+    .split(",")
+    .map((tech) => tech.trim())
+    .filter(Boolean);
 
-    revalidatePath("/projects");
-    redirect("/projects");
+  await insertProject({
+    title,
+    description,
+    type,
+    technologies: techArray,
+    link: link,
+  });
+
+  revalidatePath("/projects");
+  redirect("/projects");
 }
 
-export async function updateProject(id: number, formData: FormData): Promise<void> {
-    const validateFields = ProjectFormSchema.safeParse({
-        title: formData.get("title"),
-        description: formData.get("description"),
-        technologies: formData.get("technologies"),
-        type: formData.get("type") || "school",
-        link: formData.get("link") || undefined,
-    });
+export async function updateProject(
+  id: number,
+  _prevState: ProjectFormState,  
+  formData: FormData,
+): Promise<ProjectFormState> {
+  const validateFields = ProjectFormSchema.safeParse({
+    title: formData.get("title"),
+    description: formData.get("description"),
+    technologies: formData.get("technologies"),
+    type: formData.get("type") || "school",
+    link: formData.get("link") || undefined,
+  });
 
-    if (!validateFields.success) {
-        throw new Error("Invalid project form data");
-    }
+  if (!validateFields.success) {
+    return {
+      message: "Please correct the highlighted fields.",
+      errors: validateFields.error.flatten().fieldErrors,
+    };
+  }
 
-    const { title, description, technologies, type, link } = validateFields.data;
-    
-    const techArray = technologies
-        .split(",")
-        .map((tech) => tech.trim())
-        .filter(Boolean);
+  const { title, description, technologies, type, link } = validateFields.data;
 
-    await updateProjectById(id, {
-        title,
-        description,
-        type,
-        technologies: techArray,
-        link: link || null,
-    });
-    
-    revalidatePath("/projects");
-    redirect("/projects");
+  const techArray = technologies
+    .split(",")
+    .map((tech) => tech.trim())
+    .filter(Boolean);
+
+  await updateProjectById(id, {
+    title,
+    description,
+    type,
+    technologies: techArray,
+    link: link || null,
+  });
+
+  revalidatePath("/projects");
+  redirect("/projects");
 }
 
 export async function deleteProject(id: number) {
   await deleteProjectById(id);
-  revalidatePath("/projects")  
+  revalidatePath("/projects");
 }
-    

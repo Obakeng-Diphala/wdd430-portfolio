@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ProjectForm from "@/components/ProjectForm";
 import { getProjectById } from "@/lib/projects-db";
 import { updateProject } from "@/lib/actions";
 
@@ -31,92 +32,17 @@ export default async function EditProjectPage(props: {
         </Link>
       </div>
 
-      <form action={updateProjectWithId} className="space-y-4">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium mb-1">
-            Title
-          </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            defaultValue={project.title}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium mb-1">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={4}
-            defaultValue={project.description}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="technologies" className="block text-sm font-medium mb-1">
-            Technologies (comma-separated)
-          </label>
-          <input
-            id="technologies"
-            name="technologies"
-            type="text"
-            defaultValue={project.technologies.join(", ")}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="type" className="block text-sm font-medium mb-1">
-            Project Type
-          </label>
-          <select
-            id="type"
-            name="type"
-            defaultValue={project.type}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-          >
-            <option value="school">School</option>
-            <option value="opensource">Open Source</option>
-          </select>
-        </div>
-
-        
-        <div>
-          <label htmlFor="link" className="block text-sm font-medium mb-1">
-            Project Link (optional)
-          </label>
-          <input
-            id="link"
-            name="link"
-            defaultValue={project.link ?? ""}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-          />
-        </div>
-      
-        <div className="flex gap-3 pt-2">
-          <button
-            type="submit"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            Save Changes
-          </button>
-          <Link
-            href="/"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
-          >
-            Cancel
-          </Link>
-        </div>
-      </form>
-    </main> 
+      <ProjectForm
+        action={updateProjectWithId}
+        submitLabel="Save Changes"
+        project={{
+          title: project.title,
+          description: project.description,
+          technologies: project.technologies,
+          type: project.type,
+          link: project.link,
+        }}
+      />
+    </main>
   );
-}  
+}
